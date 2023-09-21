@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+raise "Failed to regenerate basic loader" unless system "bin/loader generate"
+
 require "boot_parser"
 
 RSpec.configure do |config|
