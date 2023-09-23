@@ -17,7 +17,7 @@ class LoaderGenerator
         auto_loader.on_load do |_cpath, _value, abspath|
           next if abspath !~ /.rb$/i # skip directories
 
-          out.puts "require '#{path_to_requirement(abspath)}'"
+          out.puts "require \"#{path_to_requirement(abspath)}\""
         end
         auto_loader.eager_load
       end
