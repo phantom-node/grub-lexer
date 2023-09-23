@@ -11,6 +11,8 @@
 
 AllCops:
   DisabledByDefault: true
+  Exclude:
+    - '**/*.rex.rb'
 Style/FrozenStringLiteralComment:
   Enabled: true
   SafeAutoCorrect: true
