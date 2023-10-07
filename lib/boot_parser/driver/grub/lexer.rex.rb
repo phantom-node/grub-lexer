@@ -10,7 +10,7 @@ module BootParser
   module Driver
     class Grub
 
-# Indentation has to be zeroed to make lexer generator work
+# Indentation has to be zeroed for lexer generator to work
 
 
 ##
@@ -19,6 +19,12 @@ module BootParser
 class Lexer
   require 'strscan'
 
+  # :stopdoc:
+  NORMAL_VAR     = /[[:alpha:]_][[:alnum:]_]*/
+  POSITIONAL_VAR = /[0-9]+/
+  SPECIAL_VAR    = /#|@|\?|\*/
+  VAR            = /#{NORMAL_VAR}|#{POSITIONAL_VAR}|#{SPECIAL_VAR}/
+  # :startdoc:
   # :stopdoc:
   class LexerError < StandardError ; end
   class ScanError < LexerError ; end
@@ -106,7 +112,62 @@ class Lexer
         case state
         when nil then
           case
-          
+          when ss.skip(/#.*\n/) then
+            # do nothing
+          when ss.skip(/\\\n/) then
+            # do nothing
+          when ss.skip(/\\(.)/) then
+            action { word.append match[1] }
+          when ss.skip(/'([^']*)'/) then
+            action { word.append match[1] }
+          when ss.skip(/\$"/) then
+            [:state, :QUOTE]
+          when ss.skip(/"/) then
+            [:state, :QUOTE]
+          when text = ss.scan(/\${(#{VAR})}|\$(#{VAR})/) then
+            handle_variable text
+          when ss.skip(/\$/) then
+            [:state, :INVALID_VARIABLE_NAME]
+          when text = ss.scan(/\n|;/) then
+            action { handle_meta(:SEPARATOR, text) }
+          when text = ss.scan(/{/) then
+            action { handle_meta(:BEGIN, text) }
+          when text = ss.scan(/}/) then
+            action { handle_meta(:END, text) }
+          when text = ss.scan(/&|<|>|\|/) then
+            action { handle_meta(:META, text) }
+          when text = ss.scan(/[ \t]/) then
+            handle_blank text
+          when text = ss.scan(/./) then
+            action { word.append text }
+          else
+            text = ss.string[ss.pos .. -1]
+            raise ScanError, "can not match (#{state.inspect}) at #{location}: '#{text}'"
+          end
+        when :QUOTE then
+          case
+          when ss.skip(/\\\$/) then
+            action { word.append '$' }
+          when ss.skip(/\\"/) then
+            action { word.append '"' }
+          when ss.skip(/\\\\/) then
+            action { word.append "\\" }
+          when ss.skip(/\\\n/) then
+            action { word.append "\n" }
+          when text = ss.scan(/\${(#{VAR})}|\$(#{VAR})/) then
+            handle_variable text
+          when ss.skip(/"/) then
+            [:state, nil]
+          when text = ss.scan(/.|\n/) then
+            action { word.append text }
+          else
+            text = ss.string[ss.pos .. -1]
+            raise ScanError, "can not match (#{state.inspect}) at #{location}: '#{text}'"
+          end
+        when :INVALID_VARIABLE_NAME then
+          case
+          when ss.skip(/[^\s\S]/) then
+            # do nothing
           else
             text = ss.string[ss.pos .. -1]
             raise ScanError, "can not match (#{state.inspect}) at #{location}: '#{text}'"
