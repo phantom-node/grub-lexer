@@ -6,12 +6,18 @@ module BootParser
   module Driver
     class Grub
       class Lexer
+        UnmatchedSingleQuote = Class.new StandardError
+        UnmatchedDoubleQuote = Class.new StandardError
+        NothingFollowsEscape = Class.new StandardError
+        InvalidVariableName = Class.new StandardError
+
         alias_method :raw_next_token, :next_token
         private :raw_next_token
 
         def next_token
           token = next_non_state_token
           return token if token
+          raise state_remain_exception if state_remain_exception
           [word_type, word!] if word.present?
         end
 
@@ -68,6 +74,18 @@ module BootParser
           return if ss.charpos < 1
           ss.string[ss.charpos - 1]
         end
+
+        def enter_state(name, raise_if_remain: nil)
+          @state_remain_exception = raise_if_remain
+          [:state, name]
+        end
+
+        def leave_state(_)
+          @state_remain_exception = nil
+          [:state, nil]
+        end
+
+        attr_reader :state_remain_exception
 
         # Empty method required by lexer generator
         def do_parse

@@ -120,16 +120,20 @@ class Lexer
             action { [:SEPARATOR, "\n"] }
           when text = ss.scan(/\\(.)/) then
             append_first_match text
+          when ss.skip(/\\/) then
+            action { raise NothingFollowsEscape }
           when text = ss.scan(/'([^']*)'/) then
             append_first_match text
+          when ss.skip(/'/) then
+            action { raise UnmatchedSingleQuote }
           when ss.skip(/\$"/) then
             [:state, :QUOTE]
           when ss.skip(/"/) then
-            [:state, :QUOTE]
+            action { enter_state :QUOTE, raise_if_remain: UnmatchedDoubleQuote }
           when text = ss.scan(/\${(#{VAR})}|\$(#{VAR})/) then
             handle_variable text
           when ss.skip(/\$/) then
-            [:state, :INVALID_VARIABLE_NAME]
+            action { raise InvalidVariableName }
           when text = ss.scan(/\n|;/) then
             action { handle_meta(:SEPARATOR, text) }
           when text = ss.scan(/{/) then
@@ -158,18 +162,10 @@ class Lexer
             append_first_match text
           when text = ss.scan(/\${(#{VAR})}|\$(#{VAR})/) then
             handle_variable text
-          when ss.skip(/"/) then
-            [:state, nil]
+          when text = ss.scan(/"/) then
+            leave_state text
           when text = ss.scan(/(.|\n)/) then
             append_first_match text
-          else
-            text = ss.string[ss.pos .. -1]
-            raise ScanError, "can not match (#{state.inspect}) at #{location}: '#{text}'"
-          end
-        when :INVALID_VARIABLE_NAME then
-          case
-          when ss.skip(/[^\s\S]/) then
-            # do nothing
           else
             text = ss.string[ss.pos .. -1]
             raise ScanError, "can not match (#{state.inspect}) at #{location}: '#{text}'"

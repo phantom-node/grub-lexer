@@ -4,6 +4,7 @@ module BootParser
 
 # Indentation has to be zeroed for lexer generator to work
 class Lexer
+
 macros
   NORMAL_VAR      /[[:alpha:]_][[:alnum:]_]*/
   POSITIONAL_VAR  /[0-9]+/
@@ -15,11 +16,13 @@ rules
   start_of_line?  /#.*\n/
   previous_blank? /#.*\n/           { [:SEPARATOR, "\n"] }
   /\\(.)/                           append_first_match
+  /\\/                              { raise NothingFollowsEscape }
   /'([^']*)'/                       append_first_match
+  /'/                               { raise UnmatchedSingleQuote }
   /\$"/                             :QUOTE # i18n not supported
-  /"/                               :QUOTE
+  /"/                               { enter_state :QUOTE, raise_if_remain: UnmatchedDoubleQuote }
   /\${(#{VAR})}|\$(#{VAR})/         handle_variable
-  /\$/                              :INVALID_VARIABLE_NAME
+  /\$/                              { raise InvalidVariableName }
   /\n|;/                            { handle_meta(:SEPARATOR, text) }
   /{/                               { handle_meta(:BEGIN, text) }
   /}/                               { handle_meta(:END, text) }
@@ -32,10 +35,9 @@ rules
   :QUOTE /\\(")/                    append_first_match
   :QUOTE /\\(\\)/                   append_first_match
   :QUOTE /\${(#{VAR})}|\$(#{VAR})/  handle_variable
-  :QUOTE /"/                        nil
+  :QUOTE /"/                        leave_state
   :QUOTE /(.|\n)/                   append_first_match
 
-  :INVALID_VARIABLE_NAME /[^\s\S]/  # will never match
 end
 
     end

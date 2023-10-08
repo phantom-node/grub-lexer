@@ -25,7 +25,37 @@ module BootParser
         it "raises exception when variable name is invalid" do
           expect do
             tokenize("${variable name with spaces}")
-          end.to raise_error(described_class::ScanError)
+          end.to raise_error(described_class::InvalidVariableName)
+        end
+
+        it "raises exception when variable name is empty (using braces)" do
+          expect do
+            tokenize("${}")
+          end.to raise_error(described_class::InvalidVariableName)
+        end
+
+        it "raises exception when variable name is empty (without braces)" do
+          expect do
+            tokenize("$")
+          end.to raise_error(described_class::InvalidVariableName)
+        end
+
+        it "raises exception when single quote is unmatched" do
+          expect do
+            tokenize("'")
+          end.to raise_error(described_class::UnmatchedSingleQuote)
+        end
+
+        it "raises exception when double quote is unmatched" do
+          expect do
+            tokenize('"')
+          end.to raise_error(described_class::UnmatchedDoubleQuote)
+        end
+
+        it "raises exception when nothing follows escape character" do
+          expect do
+            tokenize("\\")
+          end.to raise_error(described_class::NothingFollowsEscape)
         end
 
         private
