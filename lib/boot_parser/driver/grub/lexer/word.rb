@@ -7,17 +7,15 @@ module BootParser
         class Word
           def append(text)
             elements << text.to_s
-            nil
           end
 
           def variable(v)
             elements << v.to_sym
-            nil
           end
 
-          def render(variables)
+          def render(expander)
             elements.map do |element|
-              element.is_a?(Symbol) ? variables[element] : element
+              element.is_a?(Symbol) ? expander.call(element) : element
             end.join
           end
 

@@ -112,14 +112,16 @@ class Lexer
         case state
         when nil then
           case
-          when ss.skip(/#.*\n/) then
-            # do nothing
           when ss.skip(/\\\n/) then
             # do nothing
-          when ss.skip(/\\(.)/) then
-            action { word.append match[1] }
-          when ss.skip(/'([^']*)'/) then
-            action { word.append match[1] }
+          when start_of_line? && (ss.skip(/#.*\n/)) then
+            # do nothing
+          when previous_blank? && (ss.skip(/#.*\n/)) then
+            action { [:SEPARATOR, "\n"] }
+          when text = ss.scan(/\\(.)/) then
+            append_first_match text
+          when text = ss.scan(/'([^']*)'/) then
+            append_first_match text
           when ss.skip(/\$"/) then
             [:state, :QUOTE]
           when ss.skip(/"/) then
@@ -136,30 +138,30 @@ class Lexer
             action { handle_meta(:END, text) }
           when text = ss.scan(/&|<|>|\|/) then
             action { handle_meta(:META, text) }
-          when text = ss.scan(/[ \t]/) then
+          when text = ss.scan(/[ \t]+/) then
             handle_blank text
-          when text = ss.scan(/./) then
-            action { word.append text }
+          when text = ss.scan(/(.)/) then
+            append_first_match text
           else
             text = ss.string[ss.pos .. -1]
             raise ScanError, "can not match (#{state.inspect}) at #{location}: '#{text}'"
           end
         when :QUOTE then
           case
-          when ss.skip(/\\\$/) then
-            action { word.append '$' }
-          when ss.skip(/\\"/) then
-            action { word.append '"' }
-          when ss.skip(/\\\\/) then
-            action { word.append "\\" }
-          when ss.skip(/\\\n/) then
-            action { word.append "\n" }
+          when ss.skip(/\\(\n)/) then
+            # do nothing
+          when text = ss.scan(/\\(\$)/) then
+            append_first_match text
+          when text = ss.scan(/\\(")/) then
+            append_first_match text
+          when text = ss.scan(/\\(\\)/) then
+            append_first_match text
           when text = ss.scan(/\${(#{VAR})}|\$(#{VAR})/) then
             handle_variable text
           when ss.skip(/"/) then
             [:state, nil]
-          when text = ss.scan(/.|\n/) then
-            action { word.append text }
+          when text = ss.scan(/(.|\n)/) then
+            append_first_match text
           else
             text = ss.string[ss.pos .. -1]
             raise ScanError, "can not match (#{state.inspect}) at #{location}: '#{text}'"
