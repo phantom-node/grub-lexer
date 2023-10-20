@@ -10,10 +10,7 @@ module Grub
       NothingFollowsEscape = Class.new StandardError
       InvalidVariableName = Class.new StandardError
 
-      alias_method :raw_next_token, :next_token
-      private :raw_next_token
-
-      def next_token
+      def call
         token = next_non_state_token
         return token if token
         raise state_remain_exception if state_remain_exception
@@ -25,7 +22,7 @@ module Grub
       def next_non_state_token
         token = nil
         loop do
-          token = raw_next_token
+          token = next_token
           next if token && token[0] == :state
           break
         end

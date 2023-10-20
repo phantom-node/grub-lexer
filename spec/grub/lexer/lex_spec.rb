@@ -70,7 +70,7 @@ module Grub
       def tokenize(config)
         lexer.parse config
         result = []
-        while (token = lexer.next_token)
+        while (token = lexer.call)
           result << token
         end
         result
