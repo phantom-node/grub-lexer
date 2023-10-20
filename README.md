@@ -1,5 +1,7 @@
 # Grub::Lexer
 
+[![Gem Version](https://badge.fury.io/rb/grub-lexer.svg)](https://badge.fury.io/rb/grub-lexer)
+
 Convert Grub boot loader configuration into tokens that can be fed into the parser.
 
 ## Installation
