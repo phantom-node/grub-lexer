@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/grub/lexer_version"
+require_relative "lib/grub/lexer/version"
 
 Gem::Specification.new do |spec|
   spec.name = "grub-lexer"
-  spec.version = Grub::LEXER_VERSION
+  spec.version = Grub::Lexer::VERSION
   spec.authors = ["Paweł Pokrywka"]
   spec.email = ["pepawel@users.noreply.github.com"]
 

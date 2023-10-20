@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module ::Grub
-  LEXER_AUTOLOADERS = []
+  class Lexer
+    AUTOLOADERS = []
+  end
 end
 
 source "https://rubygems.org"

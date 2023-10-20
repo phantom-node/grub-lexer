@@ -2,6 +2,6 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-require "grub"
+require "grub/lexer"
 require "irb"
 IRB.start(__FILE__)

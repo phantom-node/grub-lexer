@@ -78,7 +78,7 @@ loader_path = File.join(__dir__, '..', 'lib', 'basic_loader.rb')
 klass = ARGV[0] == 'generate' ? LoaderGenerator : LoaderValidator
 action = klass.new(loader_path)
 result = action.call do
-  require 'grub'
-  Grub::LEXER_AUTOLOADERS
+  require "grub/lexer"
+  Grub::Lexer::AUTOLOADERS
 end
 exit 1 unless result
