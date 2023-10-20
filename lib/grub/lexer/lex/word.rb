@@ -4,18 +4,14 @@ module Grub
   class Lexer
     class Lex
       class Word
+        attr_reader :parts
+
         def append(text)
-          elements << text.to_s
+          parts << text.to_s
         end
 
         def variable(v)
-          elements << v.to_sym
-        end
-
-        def render(expander)
-          elements.map do |element|
-            element.is_a?(Symbol) ? expander.call(element) : element
-          end.join
+          parts << v.to_sym
         end
 
         def present?
@@ -23,15 +19,13 @@ module Grub
         end
 
         def blank?
-          elements.empty?
+          parts.empty?
         end
 
         private
 
-        attr_reader :elements
-
         def initialize
-          @elements = []
+          @parts = []
         end
       end
     end

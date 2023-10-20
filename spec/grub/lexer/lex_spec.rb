@@ -76,13 +76,15 @@ module Grub
         result
       end
 
-      let :expander do
-        ->(var) { "{{ #{var} }}" }
+      def expand(parts)
+        parts.map do |part|
+          part.is_a?(Symbol) ? "{{ #{part} }}" : part
+        end.join
       end
 
       def simplify(tokens)
         tokens.map do |type, value|
-          value = value.respond_to?(:render) ? value.render(expander) : value
+          value = value.respond_to?(:parts) ? expand(value.parts) : value
           [type, value]
         end
       end
