@@ -3,4 +3,4 @@
 # File generated automatically, do not edit
 
 require "grub/lexer/lex"
-require "grub/lexer/lex/word"
+require "grub/lexer/word"
