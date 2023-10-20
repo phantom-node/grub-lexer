@@ -11,6 +11,7 @@ module Grub
       InvalidVariableName = Class.new StandardError
 
       def call
+        return nil unless ss
         token = next_non_state_token
         return token if token
         raise state_remain_exception if state_remain_exception

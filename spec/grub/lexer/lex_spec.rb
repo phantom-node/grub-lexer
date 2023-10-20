@@ -57,6 +57,10 @@ module Grub
         end.to raise_error(described_class::NothingFollowsEscape)
       end
 
+      it "returns nil if called before parsing" do
+        expect(lexer.call).to be_nil
+      end
+
       private
 
       def split_file(file)
