@@ -2,7 +2,7 @@
 
 module ::Grub
   class Lexer
-    AUTOLOADERS = []
+    AUTOLOADERS = [] unless defined? AUTOLOADERS
   end
 end
 
