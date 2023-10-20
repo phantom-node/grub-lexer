@@ -38,7 +38,7 @@ module Grub
     attr_reader :worker, :word_checker, :value_builder
 
     def initialize(
-      expander: ->(v) { "${#{v}}" },
+      expander = ->(v) { "${#{v}}" },
       worker: Lex.new,
       word_checker: ->(v) { v.is_a? Word },
       value_builder: ->(arg) { TokenValue.new(arg, expander) }

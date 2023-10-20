@@ -3,9 +3,8 @@
 module Grub
   RSpec.describe Lexer do
     subject(:lexer) {
-      deps = {worker: worker, word_checker: ->(_) { word? }}
-      deps[:expander] = expander if expander
-      described_class.new(**deps)
+      args = expander ? [expander] : []
+      described_class.new(*args, worker: worker, word_checker: ->(_) { word? })
     }
 
     let(:expander) { nil }
