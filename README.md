@@ -1,8 +1,6 @@
-# Grub
+# Grub::Lexer
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/grub`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Convert Grub boot loader configuration into tokens that can be fed into the parser.
 
 ## Installation
 
@@ -16,7 +14,52 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-TODO: Write usage instructions here
+### Basic example
+
+    require "grub/lexer"
+    lexer = Grub::Lexer.new
+    lexer.parse "sleep 1"
+    lexer.next_token   # => [:WORD, "sleep"]
+    lexer.next_token   # => [:WORD, "1"]
+    lexer.next_token   # => nil
+
+### Loading configuration from file
+
+    require "grub/lexer"
+    lexer = Grub::Lexer.new
+    lexer.parse_file "/boot/grub/grub.cfg"
+
+### Variables expansion
+
+    require "grub/lexer"
+    expander = ->(var) { var == :greeting ? "hello" : "awesome" }
+    lexer = Grub::Lexer.new expander
+    lexer.parse %{echo "$greeting ${adjective} world!"\n}
+    lexer.next_token   # => [:WORD, "echo"]
+    lexer.next_token   # => [:WORD, "hello awesome world!"]
+    lexer.next_token   # => [:SEPARATOR, "\n"]
+
+### Variables detection and per-call expanders
+
+    require "grub/lexer"
+    lexer = Grub::Lexer.new ->(_) { "same" }
+    lexer.parse '$var1 text "$var2 text"'
+    token = lexer.next_token                 # => [:WORD, "same"]
+    token[1].expandable?                     # => true
+    token = lexer.next_token                 # => [:WORD, "text"]
+    token[1].expandable?                     # => false
+    token = lexer.next_token                 # => [:WORD, "same text"]
+    token[1].to_s(->(v) { v.to_s.upcase })   # => "VAR2 text"
+
+## Limitations
+
+Only Grub 2 is supported. Grub Legacy may work, but hasn't been tested.
+
+The gem doesn't support Grub translations.
+I18n strings (`$"translation key"`) are treated like normal strings in double quotes.
+
+Only subset of metacharacters are recognized as distinct token types.
+However, implementation of missing metacharacter types is trivial.
 
 ## Development
 
@@ -26,7 +69,16 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at <https://github.com/[USERNAME]/grub-lexer>. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/grub-lexer/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at <https://github.com/phantom-node/grub-lexer>. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/grub-lexer/blob/master/CODE_OF_CONDUCT.md).
+
+## Author
+
+My name is Paweł Pokrywka and I'm the author of grub-lexer.
+
+If you want to contact me or get to know me better, check out
+[my blog](https://blog.pawelpokrywka.com).
+
+Thank you for your interest in this project :)
 
 ## License
 

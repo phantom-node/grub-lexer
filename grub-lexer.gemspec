@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Paweł Pokrywka"]
   spec.email = ["pepawel@users.noreply.github.com"]
 
-  spec.summary = "Parse boot loader configuration and return list of boot entries."
+  spec.summary = "Convert Grub boot loader configuration into tokens that can be fed into the parser."
   spec.homepage = "https://phantomno.de/grub-lexer"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.7.0"
