@@ -79,6 +79,6 @@ klass = ARGV[0] == 'generate' ? LoaderGenerator : LoaderValidator
 action = klass.new(loader_path)
 result = action.call do
   require 'boot_parser'
-  BootParser::AUTOLOADERS
+  BootParser::LEXER_AUTOLOADERS
 end
 exit 1 unless result

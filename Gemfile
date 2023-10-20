@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ::BootParser
-  AUTOLOADERS = []
+  LEXER_AUTOLOADERS = []
 end
 
 source "https://rubygems.org"
