@@ -3,7 +3,7 @@ module BootParser
     class Grub
 
 # Indentation has to be zeroed for lexer generator to work
-class Lexer
+class Lex
 
 macros
   NORMAL_VAR      /[[:alpha:]_][[:alnum:]_]*/

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require_relative "lexer.rex"
+require_relative "lex.rex"
 
 module BootParser
   module Driver
     class Grub
-      class Lexer
+      class Lex
         UnmatchedSingleQuote = Class.new StandardError
         UnmatchedDoubleQuote = Class.new StandardError
         NothingFollowsEscape = Class.new StandardError

@@ -3,7 +3,7 @@
 module BootParser
   module Driver
     class Grub
-      RSpec.describe Lexer do
+      RSpec.describe Lex do
         subject(:lexer) { described_class.new }
 
         def self.configs

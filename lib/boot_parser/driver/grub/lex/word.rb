@@ -3,7 +3,7 @@
 module BootParser
   module Driver
     class Grub
-      class Lexer
+      class Lex
         class Word
           def append(text)
             elements << text.to_s

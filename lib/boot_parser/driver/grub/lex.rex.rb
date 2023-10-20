@@ -16,7 +16,7 @@ module BootParser
 ##
 # The generated lexer Lexer
 
-class Lexer
+class Lex
   require 'strscan'
 
   # :stopdoc:
