@@ -1,4 +1,4 @@
-module BootParser
+module Grub
   class Lexer
 
 # Indentation has to be zeroed for lexer generator to work

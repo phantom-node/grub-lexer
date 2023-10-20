@@ -12,7 +12,7 @@ Rake::Task[:build].enhance [:validate_loader]
 
 RSpec::Core::RakeTask.new(:spec)
 
-task generate_lexers: ["lib/boot_parser/lexer/lex.rex.rb"]
+task generate_lexers: ["lib/grub/lexer/lex.rex.rb"]
 task spec: :generate_lexers
 
 task default: %i[spec]

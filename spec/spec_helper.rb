@@ -2,7 +2,7 @@
 
 raise "Failed to regenerate basic loader" unless system "bin/loader generate"
 
-require "boot_parser"
+require "grub"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

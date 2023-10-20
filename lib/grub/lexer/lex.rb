@@ -2,7 +2,7 @@
 
 require_relative "lex.rex"
 
-module BootParser
+module Grub
   class Lexer
     class Lex
       UnmatchedSingleQuote = Class.new StandardError

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module BootParser
+module Grub
   class Lexer
   end
 end

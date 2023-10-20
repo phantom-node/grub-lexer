@@ -2,6 +2,6 @@
 
 # File generated automatically, do not edit
 
-require "boot_parser/lexer"
-require "boot_parser/lexer/lex"
-require "boot_parser/lexer/lex/word"
+require "grub/lexer"
+require "grub/lexer/lex"
+require "grub/lexer/lex/word"
