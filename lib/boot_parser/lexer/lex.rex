@@ -1,6 +1,5 @@
 module BootParser
-  module Driver
-    class Grub
+  class Lexer
 
 # Indentation has to be zeroed for lexer generator to work
 class Lex
@@ -40,6 +39,5 @@ rules
 
 end
 
-    end
   end
 end
