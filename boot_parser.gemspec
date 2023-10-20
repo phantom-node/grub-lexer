@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/boot_parser/version"
+require_relative "lib/boot_parser/lexer_version"
 
 Gem::Specification.new do |spec|
   spec.name = "boot_parser"
-  spec.version = BootParser::VERSION
+  spec.version = BootParser::LEXER_VERSION
   spec.authors = ["Paweł Pokrywka"]
   spec.email = ["pepawel@users.noreply.github.com"]
 
