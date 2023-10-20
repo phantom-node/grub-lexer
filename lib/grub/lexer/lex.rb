@@ -54,11 +54,11 @@ module Grub
       end
 
       def word
-        @word ||= Word.new
+        @word ||= word_builder.call
       end
 
       def word!
-        word.tap { @word = Word.new }
+        word.tap { @word = word_builder.call }
       end
 
       def start_of_line?
@@ -90,10 +90,11 @@ module Grub
       def do_parse
       end
 
-      attr_reader :word_type
+      attr_reader :word_type, :word_builder
 
-      def initialize(word_type: :WORD)
+      def initialize(word_type: :WORD, word_builder: -> { Word.new })
         @word_type = word_type
+        @word_builder = word_builder
       end
     end
   end
