@@ -9,7 +9,7 @@ if defined? Grub::Lexer::AUTOLOADERS
     loader.setup
   end
 else
-  require "basic_loader"
+  require_relative "../basic_loader"
 end
 
 module Grub
