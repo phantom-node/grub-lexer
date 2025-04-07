@@ -83,7 +83,7 @@ the [code of conduct](https://github.com/[USERNAME]/grub-lexer/blob/master/CODE_
 My name is Paweł Pokrywka and I'm the author of grub-lexer.
 
 If you want to contact me or get to know me better, check out
-[my blog](https://blog.pawelpokrywka.com).
+[my blog](https://www.pawelpokrywka.com).
 
 Thank you for your interest in this project :)
 
